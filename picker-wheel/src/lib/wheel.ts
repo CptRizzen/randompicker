@@ -10,6 +10,7 @@ export type Slice = {
 }
 
 // Create pie slice paths for n options, centered at 0,0 radius 100
+// Slices start at the top (12 o'clock) and go clockwise
 export function computeSlices(labels: string[], colors?: string[]): Slice[] {
   const n = Math.max(1, labels.length)
   const anglePer = 360 / n
@@ -18,8 +19,9 @@ export function computeSlices(labels: string[], colors?: string[]): Slice[] {
   const toRad = (deg: number) => (deg * Math.PI) / 180
 
   return labels.map((label, i) => {
-    const startAngle = i * anglePer
-    const endAngle = (i + 1) * anglePer
+    // Start at -90 degrees to position first slice at top (12 o'clock)
+    const startAngle = i * anglePer - 90
+    const endAngle = (i + 1) * anglePer - 90
 
     const largeArc = endAngle - startAngle > 180 ? 1 : 0
 
