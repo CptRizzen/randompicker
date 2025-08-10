@@ -5,6 +5,7 @@ import { Wheel } from '@/components/Wheel'
 import { OptionsList } from '@/components/OptionsList'
 import { AdSlot } from '@/components/AdSlot'
 import { WinnerAnnouncement } from '@/components/WinnerAnnouncement'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import { assignColors } from '@/lib/colors'
 import { defaultOptions } from '@/lib/defaults'
 import { useLocalStorage } from '@/hooks/useLocalStorage'
@@ -38,6 +39,10 @@ export default function HomePage() {
     setOptions(options.map(o => (o.id === id ? { ...o, label } : o)))
   }
 
+  const handleUpdateColor = (id: string, color: string) => {
+    setOptions(options.map(o => (o.id === id ? { ...o, color } : o)))
+  }
+
   const handleBulk = (bulk: string) => {
     const parts = bulk
       .split(/\n|,/)
@@ -60,10 +65,10 @@ export default function HomePage() {
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-6 sm:py-10">
-      <header className="mb-4 sm:mb-8">
-        <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Picker Wheel</h1>
-        <p className="text-sm text-gray-600">Add options, spin, and get a random winner.</p>
-      </header>
+        <header className="mb-4 sm:mb-8">
+          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Picker Wheel</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Add options, spin, and get a random winner.</p>
+        </header>
 
       <AdSlot />
 
@@ -74,6 +79,7 @@ export default function HomePage() {
             spinning={spinning}
             setSpinning={setSpinning}
             onWinner={onWinner}
+            lastWinner={lastWinner}
           />
         </section>
 
@@ -83,6 +89,7 @@ export default function HomePage() {
             onAdd={handleAdd}
             onRemove={handleRemove}
             onUpdate={handleUpdate}
+            onUpdateColor={handleUpdateColor}
             onBulk={handleBulk}
             onShuffle={handleShuffle}
             onReset={handleReset}
@@ -94,9 +101,10 @@ export default function HomePage() {
 
       <WinnerAnnouncement winner={lastWinner?.label || ''} />
 
-      <footer className="mt-10 text-center text-xs text-gray-500">
-        <p>Made with Next.js. Installable as a PWA. Placeholder ads and analytics included.</p>
-      </footer>
-    </main>
+
+        <footer className="mt-10 text-center text-xs text-gray-500 dark:text-gray-400">
+          <p>Made with Next.js. Installable as a PWA. Placeholder ads and analytics included.</p>
+        </footer>
+      </main>
   )
 }

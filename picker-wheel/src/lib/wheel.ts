@@ -36,9 +36,23 @@ export function computeSlices(labels: string[], colors?: string[]): Slice[] {
     ].join(' ')
 
     const mid = startAngle + anglePer / 2
-    const textRadius = radius * 0.6
+    // Position text at 65% of radius for good centering within slices
+    const textRadius = radius * 0.65
     const tx = Math.cos(toRad(mid)) * textRadius
     const ty = Math.sin(toRad(mid)) * textRadius
+
+    // TEXT ROTATION for radial reading from outside to inside
+    // The text should read with the first letter pointing toward the outside edge
+    // and the last letter pointing toward the center
+    
+    // Base rotation: align text with the radius direction (pointing toward center)
+    let textRotation = mid
+    
+    // For the left half of the wheel (90° to 270°), flip the text 180°
+    // so it reads from outside to inside instead of inside to outside
+    if (mid > 90 && mid < 270) {
+      textRotation += 180
+    }
 
     return {
       startAngle,
@@ -46,7 +60,7 @@ export function computeSlices(labels: string[], colors?: string[]): Slice[] {
       path,
       color: colors?.[i] || '#e5e7eb',
       textPosition: { x: tx, y: ty },
-      textRotation: mid,
+      textRotation: textRotation,
     }
   })
 }
@@ -54,9 +68,18 @@ export function computeSlices(labels: string[], colors?: string[]): Slice[] {
 // Given a top pointer at angle 0, map landing angle [0,360) to index among n slices clockwise
 export function angleToIndex(angleFromTop: number, count: number): number {
   if (count <= 0) return 0
+  
+  // Normalize angle to [0, 360)
+  const normalizedAngle = ((angleFromTop % 360) + 360) % 360
+  
+  // Handle the edge case where angle is exactly 360° (should be index 0)
+  if (normalizedAngle >= 360) return 0
+  
   const anglePer = 360 / count
-  const idx = Math.floor(angleFromTop / anglePer) % count
-  return idx
+  const idx = Math.floor(normalizedAngle / anglePer)
+  
+  // Ensure index is within bounds
+  return Math.min(idx, count - 1)
 }
 
 // Compute a new spin target rotation using easing-friendly big turns + randomness

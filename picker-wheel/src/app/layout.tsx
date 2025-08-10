@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { Analytics } from '@/components/Analytics'
+import { ClientThemeWrapper } from '@/components/ClientThemeWrapper'
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL || 'https://pickerwheel.example'),
@@ -36,9 +37,11 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="h-full">
-      <body className="min-h-full antialiased">
-        {children}
-        <Analytics />
+      <body className="min-h-full antialiased bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200">
+        <ClientThemeWrapper>
+          {children}
+          <Analytics />
+        </ClientThemeWrapper>
       </body>
     </html>
   )
